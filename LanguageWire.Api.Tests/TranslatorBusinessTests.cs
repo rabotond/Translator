@@ -8,12 +8,19 @@ namespace LanguageWire.Api.Tests
     public class TranslatorBusinessTests
     {
         [Fact]
-        public async Task Translation_Should_Work()
+        public async Task TranslationController_Should_Work()
         {
-            var input = "myText";
+            // Arrange
+            var targetLang = "en";
+            var inputText = "katze";
+            var outputText = "cat";
+
+            // Act
             var business = new TranslatorBusiness();
-            var translatedText = await business.Translate(input);
-            translatedText.Should().BeEquivalentTo(input);
+            var translatedText = await business.Translate(inputText, targetLang);
+            
+            // Assert
+            translatedText.Should().BeEquivalentTo(outputText);
         }
     }
 }

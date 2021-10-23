@@ -1,4 +1,5 @@
 using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using LanguageWire.Api.Business;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,8 @@ namespace LanguageWire.Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Produces(MediaTypeNames.Application.Json)]
+    [Consumes(MediaTypeNames.Application.Json)]
     public class TranslatorController : ControllerBase
     {
         private readonly ITranslatorBusiness _translatorBusiness;
@@ -16,10 +19,10 @@ namespace LanguageWire.Api.Controllers
             _translatorBusiness = translatorBusiness ?? throw new ArgumentNullException(nameof(translatorBusiness));
         }
         
-        [HttpGet]
-        public async Task<string> Translate(string input)
+        [HttpGet(Name = nameof(Translate))]
+        public async Task<string> Translate(string input, string targetLang)
         {
-            var result = await _translatorBusiness.Translate(input);
+            var result = await _translatorBusiness.Translate(input, targetLang);
             return result;
         }
     }
