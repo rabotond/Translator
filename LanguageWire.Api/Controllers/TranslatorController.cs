@@ -22,8 +22,7 @@ namespace LanguageWire.Api.Controllers
         [HttpGet(Name = nameof(Translate))]
         public async Task<string> Translate(string input, string targetLang)
         {
-            var result = await _translatorBusiness.Translate(input, targetLang);
-            return result;
+            return await _translatorBusiness.Translate(input, targetLang);
         }
     }
 }
