@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using LanguageWire.Api.Models;
 using Microsoft.Extensions.Configuration;
@@ -30,13 +32,14 @@ namespace LanguageWire.Api.Business
                 return string.Empty;
             }
             
-            string translatedText = String.Empty;
             var builder = new StringBuilder();
-            var cleanedInput = input.Replace("\n", "").Replace("\r", "").Trim();
-            
+            Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
+            var inputWords = input.Split(' ');
+            var distinctWords = inputWords.Distinct().ToDictionary(word => word, trans => trans);
+
             try
             {
-                foreach (var word in cleanedInput.Split(' '))
+                foreach (var word in inputWords.Distinct())
                 {
                     var start = new ProcessStartInfo
                     {
@@ -48,17 +51,23 @@ namespace LanguageWire.Api.Business
                     using var process = Process.Start(start);
                     using var reader = process.StandardOutput;
                     string result = await reader.ReadToEndAsync();
-                    builder.Append($" {result}");
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        distinctWords[word] = result.Replace("\n", "").Replace("\r", "").Trim();
+                    }
                 }
 
-                translatedText = builder.Replace("\n", "").Replace("\r", "").ToString().Trim();
+                foreach (var word in inputWords)
+                {
+                    builder.Append($" {distinctWords[word]}");
+                }
             }
             catch (Exception e)
             {
                 _logger.LogError("Error occured while calling python translator", e.Message);
             }
 
-            return translatedText;
+            return regex.Replace(builder.ToString().ToLower().Trim(), " ");
         }
     }
 }

@@ -1,9 +1,11 @@
 <h1>Translate Text</h1>
 
-<textarea id="inputTextArea" rows="4" cols="50"> </textarea>
+<textarea id="inputTextArea" rows="4" cols="50" [(ngModel)]="inputText"> </textarea>
 <br /><br />
-<input id="targetLang" />
-<br /><br />
-<button mat-raised-button color="primary" (click)="TranslateText()">Translate</button>
-
+<select [(ngModel)]="selectedTargetLanguage">
+    <option *ngFor="let language of targetLanguage" [value]="language.value">
+        {{ language.name }}
+    </option>
+</select>
+<button (click)="TranslateText()">Translate</button>
 <p>{{ translatedText }}</p>

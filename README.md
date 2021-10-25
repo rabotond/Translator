@@ -1,8 +1,9 @@
 # Translator app homework
 
 Build docker images:
-docker build -t translator-api:latest -f .\LanguageWire.Api\Dockerfile .
-docker build -t translator-webapp:latest -f .\LanguageWire.WebApp\Dockerfile .
+ docker build -t translator-api:latest -f .\LanguageWire.Api\Dockerfile .
+ cd LanguageWire.WebApp
+ docker build -t translator-webapp:latest -f .\Dockerfile .
 
 Run docker images: 
 docker run -p 5000:5000/tcp translator-api

@@ -45,8 +45,8 @@
             "preLaunchTask": "docker-run: debug",
             "platform": "node",
             "node": {
-                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json",
-                "localRoot": "${workspaceFolder}/LanguageWire.WebApp"
+                "package": "${workspaceFolder}/languageWireWebApp/package.json",
+                "localRoot": "${workspaceFolder}/languageWireWebApp"
             }
         }
     ]

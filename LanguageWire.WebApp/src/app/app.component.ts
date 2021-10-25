@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -11,13 +11,19 @@ export class AppComponent {
 
     displayedColumns: string[] = ['German', 'Spanish', 'English'];
     translatedText = '';
-    public playerName: string = '';
+
+    selectedTargetLanguage!: string;
+    inputText!: string;
+
+    targetLanguage = [
+        { name: 'German', value: 'de' },
+        { name: 'French', value: 'fr' },
+        { name: 'English', value: 'en' }
+    ];
 
     public TranslateText() {
         const headers = new HttpHeaders().append('content-type', 'application/json');
-        const params = new HttpParams()
-            .append('input', (<HTMLInputElement>document.getElementById('inputTextArea')).value)
-            .append('targetLang', (<HTMLInputElement>document.getElementById('targetLang')).value);
+        const params = new HttpParams().append('input', this.inputText).append('targetLang', this.selectedTargetLanguage);
         this.http.get<string>('http://localhost:5000/Translator', { headers, params }).subscribe({
             next: (data) => {
                 this.translatedText = data;

@@ -78,7 +78,7 @@
                 }
             },
             "node": {
-                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json",
+                "package": "${workspaceFolder}/languageWireWebApp/package.json",
                 "enableDebugging": true
             }
         },
@@ -88,7 +88,7 @@
             "dependsOn": ["docker-build"],
             "platform": "node",
             "node": {
-                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json"
+                "package": "${workspaceFolder}/languageWireWebApp/package.json"
             }
         },
         {
@@ -96,12 +96,12 @@
             "label": "docker-build",
             "platform": "node",
             "dockerBuild": {
-                "dockerfile": "${workspaceFolder}/LanguageWire.WebApp/Dockerfile",
-                "context": "${workspaceFolder}/LanguageWire.WebApp",
+                "dockerfile": "${workspaceFolder}/languageWireWebApp/Dockerfile",
+                "context": "${workspaceFolder}/languageWireWebApp",
                 "pull": true
             },
             "node": {
-                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json"
+                "package": "${workspaceFolder}/languageWireWebApp/package.json"
             }
         }
     ]
