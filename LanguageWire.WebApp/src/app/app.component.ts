@@ -1,5 +1,5 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { BackendService } from 'src/backend.service';
 
 @Component({
     selector: 'app-root',
@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-    constructor(private http: HttpClient) {}
+    constructor(private backendService: BackendService) {}
 
     displayedColumns: string[] = ['German', 'Spanish', 'English'];
     translatedText = '';
@@ -23,18 +23,8 @@ export class AppComponent {
     ];
 
     public TranslateText() {
-        const headers = new HttpHeaders().append('content-type', 'application/json');
-        const params = new HttpParams()
-            .append('input', this.inputText)
-            .append('sourceLanguage', this.selectedSourceLanguage)
-            .append('targetLanguage', this.selectedTargetLanguage);
-        this.http.get<string>('http://localhost:5000/api/v1/Translator/Translate', { headers, params }).subscribe({
-            next: (data) => {
-                this.translatedText = data;
-            },
-            error: (error) => {
-                console.error('There was an error!', error);
-            }
-        });
+       this.backendService.
+       TranslateText(this.inputText, this.selectedSourceLanguage, this.selectedTargetLanguage)
+       .subscribe(x => this.translatedText = x);
     }
 }
