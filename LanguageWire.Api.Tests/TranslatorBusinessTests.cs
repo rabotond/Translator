@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using FluentAssertions;
 using LanguageWire.Api.Business;
 using Microsoft.Extensions.Configuration;
@@ -18,12 +17,13 @@ namespace LanguageWire.Api.Tests
 
         [Theory]
         [InlineData("danke", "thanks")]
-        [InlineData("danke nein ja lecker lecker? nein wein wein \n wein nein danke", "thanks no and yummy yummy? no wine wine \n wine no thanks")]
+        [InlineData("danke nein ja lecker lecker? nein wein wein \n wein nein danke", "thanks no yes yummy yummy? no wine wine wine no thanks")]
         [InlineData("     danke                ", "thanks")]
         [InlineData("danke     nein danke danke ?????", "thanks no thanks thanks ?????")]
-        public async Task TranslationBusiness_English_Should_Success(string inputText, string translation)
+        public void TranslationBusiness_English_Should_Success(string inputText, string translation)
         {
             // Arrange
+            var srcLang = "de";
             var targetLang = "en";
 
             var mockLogger = new Mock<ILogger<TranslatorBusiness>>();
@@ -34,17 +34,17 @@ namespace LanguageWire.Api.Tests
                 .Build();
             // Act
             var business = new TranslatorBusiness(mockLogger.Object, configuration);
-            var translatedText = await business.Translate(inputText, targetLang);
-            
+            var translatedText = business.Translate(inputText, srcLang, targetLang);
+
             // Assert
             translatedText.Should().BeEquivalentTo(translation);
         }
 
         [Theory]
-        [InlineData("danke", "thanks", "en")]
-        [InlineData("danke", "merci", "fr")]
-        [InlineData("une", "ein", "de")]
-        public async Task TranslationBusiness_Check_Languages_Should_Success(string inputText, string translation, string targetLanguage)
+        [InlineData("danke", "thanks", "de", "en")]
+        [InlineData("danke", "merci", "de", "fr")]
+        [InlineData("une", "ein", "fr", "de")]
+        public void TranslationBusiness_Check_Languages_Should_Success(string inputText, string translation, string sourceLanguage, string targetLanguage)
         {
             // Arrange
             var mockLogger = new Mock<ILogger<TranslatorBusiness>>();
@@ -55,18 +55,19 @@ namespace LanguageWire.Api.Tests
                 .Build();
             // Act
             var business = new TranslatorBusiness(mockLogger.Object, configuration);
-            var translatedText = await business.Translate(inputText, targetLanguage);
+            var translatedText = business.Translate(inputText, sourceLanguage, targetLanguage);
 
             // Assert
             translatedText.Should().BeEquivalentTo(translation);
         }
 
-        [Fact]
-        public async Task TranslationBusiness_UnsupportedLangue_Return_EmptyString()
+        [Theory]
+        [InlineData("katze", "unsupportedLanguageType", "en")]
+        [InlineData("katze", "unsupportedLanguageType", "unsupportedLanguageType2")]
+        [InlineData("cat", "en", "unsupportedLanguageType")]
+        public void TranslationBusiness_UnsupportedLangue_Return_EmptyString(string inputText, string srcLang, string destLang)
         {
             // Arrange
-            var targetLang = "unsupportedLanguageType";
-            var inputText = "katze";
             var mockLogger = new Mock<ILogger<TranslatorBusiness>>();
 
             var configuration = new ConfigurationBuilder()
@@ -75,8 +76,8 @@ namespace LanguageWire.Api.Tests
 
             // Act
             var business = new TranslatorBusiness(mockLogger.Object, configuration);
-            var translatedText = await business.Translate(inputText, targetLang);
-            
+            var translatedText = business.Translate(inputText, srcLang, destLang);
+
             // Assert
             translatedText.Should().BeEquivalentTo(string.Empty);
         }

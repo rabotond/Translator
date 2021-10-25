@@ -8,3 +8,6 @@ Build docker images:
 Run docker images: 
 docker run -p 5000:5000/tcp translator-api
 docker run -p 5001:80/tcp translator-webapp
+
+Frontend access: http://localhost:5001/index.html 
+Api access: http://localhost:5000/index.html 

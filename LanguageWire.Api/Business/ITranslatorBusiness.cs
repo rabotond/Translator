@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
-
 namespace LanguageWire.Api.Business
 {
     public interface ITranslatorBusiness
     {
-        public Task<string> Translate(string input, string targetLang);
+        public string Translate(string input, string sourceLang, string targetLang);
     }
 }

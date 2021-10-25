@@ -24,38 +24,35 @@ namespace LanguageWire.Api.Business
             }
         }
 
-        public async Task<string> Translate(string input, string targetLang)
+        public string Translate(string input, string sourceLang, string targetLang)
         {
-            if (!SupportedLanguages.TargetLanguages.Contains(targetLang))
+            if (!SupportedLanguages.SourceLanguages.Contains(sourceLang) || !SupportedLanguages.TargetLanguages.Contains(targetLang))
             {
-                _logger.LogWarning("Target language not supported");
+                _logger.LogWarning("Language not supported");
                 return string.Empty;
             }
             
             var builder = new StringBuilder();
-            Regex regex = new Regex("[ ]{2,}", RegexOptions.None);
+            var regex = new Regex("[ ]{2,}", RegexOptions.None);
             var inputWords = input.Split(' ');
-            var distinctWords = inputWords.Distinct().ToDictionary(word => word, trans => trans);
+            var distinctWords = inputWords.Distinct().ToDictionary(key => key, value => value);
 
             try
             {
-                foreach (var word in inputWords.Distinct())
+                Parallel.ForEach(inputWords.Distinct(), word =>
                 {
                     var start = new ProcessStartInfo
                     {
                         FileName = _pythonPath,
-                        Arguments = string.Format($"Scripts/main.py {word} {targetLang}"),
+                        Arguments = string.Format($"Scripts/main.py {word} {sourceLang} {targetLang}"),
                         UseShellExecute = false,
                         RedirectStandardOutput = true
                     };
                     using var process = Process.Start(start);
                     using var reader = process.StandardOutput;
-                    string result = await reader.ReadToEndAsync();
-                    if (!string.IsNullOrEmpty(result))
-                    {
-                        distinctWords[word] = result.Replace("\n", "").Replace("\r", "").Trim();
-                    }
-                }
+                    string result =  reader.ReadToEnd();
+                    distinctWords[word] = result;
+                });
 
                 foreach (var word in inputWords)
                 {
@@ -67,7 +64,7 @@ namespace LanguageWire.Api.Business
                 _logger.LogError("Error occured while calling python translator", e.Message);
             }
 
-            return regex.Replace(builder.ToString().ToLower().Trim(), " ");
+            return regex.Replace(builder.ToString().ToLower().Replace("\n", "").Replace("\r", "").Trim(), " ");
         }
     }
 }

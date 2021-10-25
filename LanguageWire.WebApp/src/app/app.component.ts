@@ -12,10 +12,11 @@ export class AppComponent {
     displayedColumns: string[] = ['German', 'Spanish', 'English'];
     translatedText = '';
 
+    selectedSourceLanguage!: string;
     selectedTargetLanguage!: string;
     inputText!: string;
 
-    targetLanguage = [
+    languages = [
         { name: 'German', value: 'de' },
         { name: 'French', value: 'fr' },
         { name: 'English', value: 'en' }
@@ -23,7 +24,10 @@ export class AppComponent {
 
     public TranslateText() {
         const headers = new HttpHeaders().append('content-type', 'application/json');
-        const params = new HttpParams().append('input', this.inputText).append('targetLang', this.selectedTargetLanguage);
+        const params = new HttpParams()
+            .append('input', this.inputText)
+            .append('sourceLanguage', this.selectedSourceLanguage)
+            .append('targetLanguage', this.selectedTargetLanguage);
         this.http.get<string>('http://localhost:5000/Translator', { headers, params }).subscribe({
             next: (data) => {
                 this.translatedText = data;

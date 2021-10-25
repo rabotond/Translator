@@ -20,28 +20,16 @@ namespace LanguageWire.Api.Extensions
                     if (TryGetBasePath(httpReq, out var basePath))
                     {
                         var isLocalhost = httpReq.Host.Value.IndexOf("localhost", StringComparison.OrdinalIgnoreCase) != -1;
-                        var scheme = isLocalhost ? httpReq.Scheme : "https";
-                        swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{scheme}://{httpReq.Host.Value}{basePath}" } };
+                        swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{ httpReq.Scheme }://{httpReq.Host.Value}{basePath}" } };
                     }
                 });
             });
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-            // specifying the Swagger JSON endpoint.
-//            var authConfig = app.ApplicationServices.GetRequiredService<AuthConfig>();
             app.UseSwaggerUI(options =>
             {
                 options.DocumentTitle = title;
                 options.SwaggerEndpoint("./swagger/v1/swagger.json", title);
-                options.RoutePrefix = string.Empty;
-
-                //options.OAuthClientId(authConfig.ClientId);
-                options.OAuthRealm(string.Empty);
-                options.OAuthAdditionalQueryStringParams(new Dictionary<string, string>
-                {
-                    { "nonce", $"{DateTimeOffset.Now.ToUnixTimeMilliseconds()}" },
-                    { "state", $"{DateTimeOffset.Now.ToUnixTimeMilliseconds()}" },
-                });
+                options.RoutePrefix = string.Empty;                
             });
 
             return app;
