@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LanguageWire.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/v1/[controller]/[action]")]
     [Produces(MediaTypeNames.Application.Json)]
     [Consumes(MediaTypeNames.Application.Json)]
     public class TranslatorController : ControllerBase

@@ -28,7 +28,7 @@ export class AppComponent {
             .append('input', this.inputText)
             .append('sourceLanguage', this.selectedSourceLanguage)
             .append('targetLanguage', this.selectedTargetLanguage);
-        this.http.get<string>('http://localhost:5000/Translator', { headers, params }).subscribe({
+        this.http.get<string>('http://localhost:5000/api/v1/Translator/Translate', { headers, params }).subscribe({
             next: (data) => {
                 this.translatedText = data;
             },
