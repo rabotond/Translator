@@ -18,7 +18,7 @@ export class AppComponent {
         const params = new HttpParams()
             .append('input', (<HTMLInputElement>document.getElementById('inputTextArea')).value)
             .append('targetLang', (<HTMLInputElement>document.getElementById('targetLang')).value);
-        this.http.get<string>('https://localhost:5001/Translator', { headers, params }).subscribe({
+        this.http.get<string>('http://localhost:5000/Translator', { headers, params }).subscribe({
             next: (data) => {
                 this.translatedText = data;
             },

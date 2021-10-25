@@ -37,6 +37,17 @@
             "netCore": {
                 "appProject": "${workspaceFolder}/LanguageWire.Api/LanguageWire.Api.csproj"
             }
+        },
+        {
+            "name": "Docker Node.js Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "platform": "node",
+            "node": {
+                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json",
+                "localRoot": "${workspaceFolder}/LanguageWire.WebApp"
+            }
         }
     ]
 }

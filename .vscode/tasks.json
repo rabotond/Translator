@@ -70,20 +70,38 @@
         {
             "type": "docker-run",
             "label": "docker-run: debug",
-            "dependsOn": ["docker-build: debug"],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/LanguageWire.Api/LanguageWire.Api.csproj",
+            "dependsOn": ["docker-build"],
+            "dockerRun": {
+                "env": {
+                    "DEBUG": "*",
+                    "NODE_ENV": "development"
+                }
+            },
+            "node": {
+                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json",
                 "enableDebugging": true
             }
         },
         {
             "type": "docker-run",
             "label": "docker-run: release",
-            "dependsOn": ["docker-build: release"],
-            "dockerRun": {},
-            "netCore": {
-                "appProject": "${workspaceFolder}/LanguageWire.Api/LanguageWire.Api.csproj"
+            "dependsOn": ["docker-build"],
+            "platform": "node",
+            "node": {
+                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build",
+            "platform": "node",
+            "dockerBuild": {
+                "dockerfile": "${workspaceFolder}/LanguageWire.WebApp/Dockerfile",
+                "context": "${workspaceFolder}/LanguageWire.WebApp",
+                "pull": true
+            },
+            "node": {
+                "package": "${workspaceFolder}/LanguageWire.WebApp/package.json"
             }
         }
     ]
