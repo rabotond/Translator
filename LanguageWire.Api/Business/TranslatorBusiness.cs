@@ -13,6 +13,7 @@ namespace LanguageWire.Api.Business
 {
     public class TranslatorBusiness : ITranslatorBusiness
     {
+        private const int maxDegreeOfParallelism = 20;
         private readonly ILogger<TranslatorBusiness>  _logger;
         private readonly string _pythonPath;
 
@@ -44,7 +45,7 @@ namespace LanguageWire.Api.Business
 
             try
             {
-                Parallel.ForEach(inputWords.Distinct(), word =>
+                Parallel.ForEach(inputWords.Distinct(), new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, word =>
                 {
                     var start = new ProcessStartInfo
                     {
