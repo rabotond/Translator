@@ -28,10 +28,10 @@ namespace LanguageWire.Api.Tests
 
             var mockLogger = new Mock<ILogger<TranslatorBusiness>>();
 
-
             var configuration = new ConfigurationBuilder()
                 .AddInMemoryCollection(inMemorySettings)
                 .Build();
+                
             // Act
             var business = new TranslatorBusiness(mockLogger.Object, configuration);
             var translatedText = business.Translate(inputText, srcLang, targetLang);

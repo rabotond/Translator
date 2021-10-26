@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -26,16 +27,20 @@ namespace LanguageWire.Api.Business
 
         public string Translate(string input, string sourceLang, string targetLang)
         {
-            if (!SupportedLanguages.SourceLanguages.Contains(sourceLang) || !SupportedLanguages.TargetLanguages.Contains(targetLang))
+            if (!SupportedLanguages.SourceLanguages.Contains(sourceLang))
             {
-                _logger.LogWarning("Language not supported");
+                _logger.LogWarning("Source langauge not supported, source value: {SourceLang} ", sourceLang);
+                return string.Empty;
+            }
+
+            if(!SupportedLanguages.TargetLanguages.Contains(targetLang))
+            {
+                _logger.LogWarning("Target language not supported, target value: {TargetLang}", targetLang);
                 return string.Empty;
             }
             
-            var builder = new StringBuilder();
-            var regex = new Regex("[ ]{2,}", RegexOptions.None);
             var inputWords = input.Split(' ');
-            var distinctWords = inputWords.Distinct().ToDictionary(key => key, value => value);
+            var concurrentDictionary = new ConcurrentDictionary<string, string>();
 
             try
             {
@@ -51,20 +56,27 @@ namespace LanguageWire.Api.Business
                     using var process = Process.Start(start);
                     using var reader = process.StandardOutput;
                     string result =  reader.ReadToEnd();
-                    distinctWords[word] = result;
+
+                    concurrentDictionary[word] = result;
                 });
+
+                var builder = new StringBuilder();
 
                 foreach (var word in inputWords)
                 {
-                    builder.Append($" {distinctWords[word]}");
+                    builder.Append($" {concurrentDictionary[word]}");
                 }
+
+                var regex = new Regex("[ ]{2,}", RegexOptions.None);
+
+                // replacing special characters to sanitize python output and remove multiple whitespaces
+                return regex.Replace(builder.ToString().ToLower().Replace("\n", "").Replace("\r", "").Trim(), " ");
             }
             catch (Exception e)
             {
                 _logger.LogError("Error occured while calling python translator", e.Message);
+                return string.Empty;
             }
-
-            return regex.Replace(builder.ToString().ToLower().Replace("\n", "").Replace("\r", "").Trim(), " ");
         }
     }
 }

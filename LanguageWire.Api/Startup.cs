@@ -21,6 +21,8 @@ namespace LanguageWire.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddLogging();
             
             services.AddSwagger<Startup>(SwaggerTitle);
 
