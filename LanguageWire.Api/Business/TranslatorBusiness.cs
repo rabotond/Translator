@@ -13,7 +13,7 @@ namespace LanguageWire.Api.Business
 {
     public class TranslatorBusiness : ITranslatorBusiness
     {
-        private const int maxDegreeOfParallelism = 20;
+        private const int MaxDegreeOfParallelism = 20;
         private readonly ILogger<TranslatorBusiness>  _logger;
         private readonly string _pythonPath;
 
@@ -30,7 +30,7 @@ namespace LanguageWire.Api.Business
         {
             if (!SupportedLanguages.SourceLanguages.Contains(sourceLang))
             {
-                _logger.LogWarning("Source langauge not supported, source value: {SourceLang} ", sourceLang);
+                _logger.LogWarning("Source language not supported, source value: {SourceLang} ", sourceLang);
                 return string.Empty;
             }
 
@@ -45,7 +45,7 @@ namespace LanguageWire.Api.Business
 
             try
             {
-                Parallel.ForEach(inputWords.Distinct(), new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism }, word =>
+                Parallel.ForEach(inputWords.Distinct(), new ParallelOptions { MaxDegreeOfParallelism = MaxDegreeOfParallelism }, word =>
                 {
                     var start = new ProcessStartInfo
                     {
@@ -56,7 +56,7 @@ namespace LanguageWire.Api.Business
                     };
                     using var process = Process.Start(start);
                     using var reader = process.StandardOutput;
-                    string result =  reader.ReadToEnd();
+                    var result =  reader.ReadToEnd();
 
                     concurrentDictionary[word] = result;
                 });

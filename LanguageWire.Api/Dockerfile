@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:3.1-focal AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-focal AS base
 RUN apt-get update -y && apt-get install python3-pip python3 -y && pip3 install requests
 WORKDIR /app
 EXPOSE 5000
@@ -10,7 +10,7 @@ ENV ASPNETCORE_URLS=http://+:5000
 RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 
-FROM mcr.microsoft.com/dotnet/sdk:3.1-focal AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 WORKDIR /src
 COPY ["LanguageWire.Api/LanguageWire.Api.csproj", "LanguageWire.Api/"]
 RUN dotnet restore "LanguageWire.Api/LanguageWire.Api.csproj"

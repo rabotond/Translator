@@ -12,7 +12,7 @@ namespace LanguageWire.Api.Tests
     {
         private readonly Dictionary<string, string> inMemorySettings = new Dictionary<string, string>
         {
-            {"pythonInstallationPath", @"C:\\Python310\\python.exe"}
+            {"pythonInstallationPath", @"/Library/Frameworks/Python.framework/Versions/3.10/bin/python3"}
         };
 
         [Theory]
