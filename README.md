@@ -17,7 +17,7 @@ Api access: http://localhost:5000/index.html
 
 # PreRequirements 
 To run the services without docker you need:
-- dotnet core 3.1 LTS
+- .Net 6 LTS
 - node 8<= 
 - npm 14<=
 - python3
